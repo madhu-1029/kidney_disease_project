@@ -1,0 +1,535 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>{% block title %}KidneyAI • Renal Insight{% endblock %}</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        /* ============================================================
+           GLOBAL RESET & VARIABLES
+           WATER-BLUE THEME — Clean • Medical • Fresh
+        ============================================================ */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --blue-deep: #0a3d5c;
+            --blue-main: #1565a0;
+            --blue-bright: #2196d3;
+            --blue-soft: #64b5e0;
+            --blue-mist: #c7e6f5;
+            --blue-ice: #eaf5fb;
+
+            --aqua: #00bcd4;
+            --aqua-soft: #4dd0e1;
+            --aqua-glow: rgba(0, 188, 212, 0.22);
+
+            --danger: #ef5350;
+            --danger-soft: #ff8a80;
+
+            --text-main: #0a3d5c;
+            --text-soft: #3d6987;
+            --text-muted: #7a9db5;
+
+            --surface: #ffffff;
+            --surface-soft: #f4fafd;
+            --surface-glass: rgba(255, 255, 255, 0.75);
+            --surface-glass-strong: rgba(255, 255, 255, 0.92);
+
+            --border-soft: rgba(21, 101, 160, 0.12);
+            --border-hover: rgba(21, 101, 160, 0.35);
+            --border-aqua: rgba(0, 188, 212, 0.30);
+
+            --shadow-sm: 0 4px 14px rgba(10, 61, 92, 0.06);
+            --shadow-md: 0 10px 30px rgba(10, 61, 92, 0.10);
+            --shadow-glow: 0 0 24px rgba(33, 150, 211, 0.28);
+            --shadow-aqua: 0 8px 24px rgba(0, 188, 212, 0.30);
+
+            --radius-sm: 12px;
+            --radius-md: 18px;
+            --radius-lg: 28px;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background:
+                radial-gradient(circle at 15% 10%, #dbeeff 0%, transparent 45%),
+                radial-gradient(circle at 85% 90%, #d4ecf7 0%, transparent 45%),
+                linear-gradient(180deg, #f5fbff 0%, #eaf4fb 100%);
+            background-attachment: fixed;
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            line-height: 1.5;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* ============================================================
+           NAVBAR — Floating blue glass
+        ============================================================ */
+        .navbar-wrap {
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            padding: 18px 4%;
+            background: linear-gradient(180deg, rgba(245, 251, 255, 0.95) 0%, rgba(245, 251, 255, 0.55) 100%);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border-bottom: 1px solid var(--border-soft);
+        }
+
+        .navbar {
+            width: 100%;
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 20px;
+        }
+
+        /* ============================================================
+           LOGO
+        ============================================================ */
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            text-decoration: none;
+            flex-shrink: 0;
+            padding: 6px 18px 6px 6px;
+            background: linear-gradient(135deg, #eaf5fb 0%, #d8ecf9 100%);
+            border: 1px solid var(--border-soft);
+            border-radius: 50px;
+            transition: all 0.3s ease;
+        }
+
+        .logo:hover {
+            border-color: var(--blue-bright);
+            box-shadow: var(--shadow-glow);
+            transform: translateY(-1px);
+        }
+
+        /* ---------- NAVBAR LOGO IMAGE (FIXED) ---------- */
+        .logo-icon {
+            width: 42px;
+            height: 42px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--blue-bright), var(--aqua));
+            color: #ffffff;
+            font-size: 20px;
+            box-shadow: 0 6px 18px rgba(33, 150, 211, 0.35);
+            overflow: hidden;             /* image circle-la irukkan */
+            flex-shrink: 0;
+        }
+
+        .logo-icon img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;            /* image circle full-a fill aagum */
+            display: block;
+        }
+
+        .logo-text-wrap {
+            display: flex;
+            flex-direction: column;
+            line-height: 1;
+        }
+
+        .logo-text {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 19px;
+            font-weight: 700;
+            color: var(--blue-deep);
+            letter-spacing: -0.02em;
+        }
+
+        .logo-sub {
+            font-size: 10px;
+            color: var(--blue-bright);
+            font-weight: 700;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            margin-top: 3px;
+        }
+
+        /* ============================================================
+           NAV MENU — Pill container
+        ============================================================ */
+        .nav-menu {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            padding: 6px;
+            background: linear-gradient(135deg, #eaf5fb 0%, #dbeeff 100%);
+            border: 1px solid var(--border-soft);
+            border-radius: 50px;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .nav-menu a {
+            position: relative;
+            text-decoration: none;
+            color: var(--text-soft);
+            font-size: 14px;
+            font-weight: 600;
+            padding: 10px 18px;
+            border-radius: 40px;
+            transition: all 0.25s ease;
+            letter-spacing: -0.01em;
+            white-space: nowrap;
+        }
+
+        .nav-menu a::after {
+            content: "";
+            position: absolute;
+            left: 50%;
+            bottom: 3px;
+            width: 0;
+            height: 2.5px;
+            background: linear-gradient(90deg, var(--blue-bright), var(--aqua));
+            border-radius: 4px;
+            transform: translateX(-50%);
+            transition: width 0.3s ease;
+            box-shadow: 0 0 8px var(--aqua-glow);
+        }
+
+        .nav-menu a:hover {
+            color: var(--blue-bright);
+            background: #ffffff;
+        }
+
+        .nav-menu a.active {
+            color: var(--blue-deep);
+            background: #ffffff;
+            box-shadow: 0 4px 12px rgba(33, 150, 211, 0.15);
+        }
+
+        .nav-menu a.active::after {
+            width: 55%;
+        }
+
+        /* ============================================================
+           AUTH BUTTONS
+        ============================================================ */
+        .nav-auth {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-shrink: 0;
+        }
+
+        .nav-auth a {
+            position: relative;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 600;
+            padding: 11px 22px;
+            border-radius: 40px;
+            transition: all 0.25s ease;
+            white-space: nowrap;
+            letter-spacing: -0.01em;
+        }
+
+        .login-btn {
+            color: var(--blue-bright);
+            border: 1.5px solid var(--blue-bright);
+            background: transparent;
+        }
+
+        .login-btn:hover {
+            background: var(--blue-bright);
+            color: #ffffff;
+            box-shadow: var(--shadow-glow);
+            transform: translateY(-1px);
+        }
+
+        .register-btn {
+            color: #ffffff;
+            background: linear-gradient(135deg, var(--blue-bright), var(--aqua));
+            box-shadow: 0 8px 22px rgba(33, 150, 211, 0.35);
+        }
+
+        .register-btn:hover {
+            background: linear-gradient(135deg, #1e88c7, var(--blue-bright));
+            box-shadow: 0 12px 28px rgba(33, 150, 211, 0.45);
+            transform: translateY(-2px);
+        }
+
+        .logout-btn {
+            color: #ffffff;
+            background: linear-gradient(135deg, var(--danger), var(--danger-soft));
+            box-shadow: 0 8px 22px rgba(239, 83, 80, 0.30);
+        }
+
+        .logout-btn:hover {
+            background: linear-gradient(135deg, #e53935, var(--danger));
+            box-shadow: 0 12px 28px rgba(239, 83, 80, 0.42);
+            transform: translateY(-2px);
+        }
+
+        .user-name {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--blue-bright);
+            font-size: 13px;
+            font-weight: 600;
+            padding: 10px 16px;
+            background: linear-gradient(135deg, #eaf5fb, #d8ecf9);
+            border: 1px solid var(--border-aqua);
+            border-radius: 40px;
+            letter-spacing: -0.01em;
+        }
+
+        .user-name::before {
+            content: "";
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--aqua);
+            box-shadow: 0 0 8px var(--aqua);
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.4; }
+        }
+
+        /* ============================================================
+           MAIN CONTENT
+        ============================================================ */
+        main {
+            flex: 1;
+            min-height: calc(100vh - 200px);
+            padding: 40px 0;
+        }
+
+        /* ============================================================
+           FOOTER — Soft blue glass
+        ============================================================ */
+        footer {
+            width: 100%;
+            background: linear-gradient(135deg, #eaf5fb 0%, #d8ecf9 100%);
+            color: var(--text-soft);
+            text-align: center;
+            padding: 30px 20px;
+            margin-top: auto;
+            border-top: 1px solid var(--border-soft);
+        }
+
+        footer p {
+            font-size: 14px;
+            font-weight: 500;
+            letter-spacing: 0.01em;
+        }
+
+        footer span {
+            color: var(--blue-bright);
+            font-weight: 700;
+        }
+
+        /* ============================================================
+           DJANGO MESSAGES
+        ============================================================ */
+        .messages-container {
+            width: 90%;
+            max-width: 720px;
+            margin: 24px auto 0;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .message {
+            padding: 16px 22px;
+            border-radius: var(--radius-sm);
+            font-size: 14px;
+            font-weight: 500;
+            box-shadow: var(--shadow-sm);
+            border-left: 5px solid transparent;
+            transition: transform 0.2s ease;
+            background: #ffffff;
+        }
+
+        .message:hover {
+            transform: translateX(4px);
+        }
+
+        .message.success {
+            background: linear-gradient(135deg, #d9f7e6, #e6fff1);
+            color: #0b6b3a;
+            border-left-color: #10b981;
+        }
+
+        .message.error {
+            background: linear-gradient(135deg, #ffe3e3, #ffefef);
+            color: #a01a1a;
+            border-left-color: var(--danger);
+        }
+
+        .message.warning {
+            background: linear-gradient(135deg, #fff0d9, #fff7e6);
+            color: #8a5a00;
+            border-left-color: #f59e0b;
+        }
+
+        .message.info {
+            background: linear-gradient(135deg, #e0f0ff, #eaf6ff);
+            color: #1a4b8c;
+            border-left-color: var(--blue-bright);
+        }
+
+        /* ============================================================
+           RESPONSIVE
+        ============================================================ */
+        @media (max-width: 1200px) {
+            .logo-sub { display: none; }
+            .nav-menu a { padding: 10px 14px; font-size: 13px; }
+        }
+
+        @media (max-width: 1000px) {
+            .navbar-wrap { padding: 14px 3%; }
+            .logo { padding: 5px 14px 5px 5px; }
+            .logo-icon { width: 38px; height: 38px; font-size: 18px; }
+            .logo-text { font-size: 17px; }
+            .nav-menu a { padding: 9px 12px; font-size: 13px; }
+            .nav-auth a { padding: 10px 16px; font-size: 13px; }
+        }
+
+        @media (max-width: 850px) {
+            .navbar-wrap { padding: 12px 3%; }
+            .navbar {
+                flex-wrap: wrap;
+                justify-content: center;
+                gap: 12px;
+            }
+            .logo { order: 1; flex: 1; }
+            .nav-auth { order: 2; }
+            .nav-menu {
+                order: 3;
+                width: 100%;
+                justify-content: center;
+                flex-wrap: wrap;
+                border-radius: 24px;
+            }
+            .user-name { display: none; }
+        }
+
+        @media (max-width: 550px) {
+            .navbar-wrap { padding: 10px 3%; }
+            .logo-text { font-size: 15px; }
+            .logo-icon { width: 34px; height: 34px; font-size: 16px; }
+            .nav-menu { gap: 2px; padding: 5px; }
+            .nav-menu a { padding: 8px 10px; font-size: 12px; }
+            .nav-menu a::after { bottom: 2px; height: 2px; }
+            .nav-auth a { padding: 9px 14px; font-size: 12px; }
+            .messages-container { width: 92%; }
+            .message { padding: 14px 16px; font-size: 13px; }
+        }
+
+        {% block extra_css %}{% endblock %}
+    </style>
+</head>
+
+<body>
+
+    <!-- ============================================================
+         NAVBAR
+    ============================================================ -->
+    <div class="navbar-wrap">
+        <nav class="navbar">
+
+            <!-- LEFT — LOGO (✅ FIXED) -->
+            <a href="{% url 'home' %}" class="logo">
+                <div class="logo-icon">
+                    <img src="{% static 'images/kidney-icon.png' %}" alt="KidneyAI">
+                </div>
+                <span class="logo-text-wrap">
+                    <span class="logo-text">KidneyAI</span>
+                    <span class="logo-sub">Renal Insight</span>
+                </span>
+            </a>
+
+            <!-- CENTER — PILL NAV MENU -->
+            <div class="nav-menu">
+                <a href="{% url 'home' %}"
+                   class="{% if request.resolver_match.url_name == 'home' %}active{% endif %}">
+                    Home
+                </a>
+                <a href="{% url 'about' %}"
+                   class="{% if request.resolver_match.url_name == 'about' %}active{% endif %}">
+                    About
+                </a>
+                <a href="{% url 'predict' %}"
+                   class="{% if request.resolver_match.url_name == 'predict' %}active{% endif %}">
+                    Predict
+                </a>
+                <a href="{% url 'history' %}"
+                   class="{% if request.resolver_match.url_name == 'history' %}active{% endif %}">
+                    History
+                </a>
+            </div>
+
+            <!-- RIGHT — AUTH -->
+            <div class="nav-auth">
+                {% if user.is_authenticated %}
+                    <a href="{% url 'logout' %}" class="logout-btn">Logout</a>
+                {% else %}
+                    <a href="{% url 'login' %}" class="login-btn">Login</a>
+                    <a href="{% url 'register' %}" class="register-btn">Register</a>
+                {% endif %}
+            </div>
+
+        </nav>
+    </div>
+
+    <!-- ============================================================
+         DJANGO MESSAGES
+    ============================================================ -->
+    {% if messages %}
+        <div class="messages-container">
+            {% for message in messages %}
+                <div class="message {{ message.tags }}">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+
+    <!-- ============================================================
+         MAIN CONTENT
+    ============================================================ -->
+    <main>
+        {% block content %}
+        {% endblock %}
+    </main>
+
+    <!-- ============================================================
+         FOOTER
+    ============================================================ -->
+    <footer>
+        <p>© 2026 <span>KidneyAI</span> &nbsp;•&nbsp; AI-Based Kidney Disease Prediction</p>
+    </footer>
+
+    {% block extra_js %}
+    {% endblock %}
+
+</body>
+</html>

@@ -1,0 +1,1026 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}
+Kidney Disease Prediction | KidneyAI
+{% endblock %}
+
+
+{% block extra_css %}
+
+<style>
+
+    /* ========================================================
+       PAGE
+    ======================================================== */
+
+    .predict-page {
+        min-height: calc(100vh - 142px);
+        padding: 60px 20px;
+        background:
+            radial-gradient(circle at 15% 10%, #dbeeff 0%, transparent 45%),
+            radial-gradient(circle at 85% 90%, #d4ecf7 0%, transparent 45%),
+            linear-gradient(180deg, #f5fbff 0%, #eaf4fb 100%);
+        background-attachment: fixed;
+    }
+
+
+    /* ========================================================
+       CONTAINER
+    ======================================================== */
+
+    .predict-container {
+        width: 100%;
+        max-width: 1080px;
+        margin: 0 auto;
+    }
+
+
+    /* ========================================================
+       HEADER
+    ======================================================== */
+
+    .page-header {
+        text-align: center;
+        margin-bottom: 45px;
+        position: relative;
+    }
+
+    .page-header .badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 8px 18px;
+        background: linear-gradient(135deg, #eaf5fb, #d8ecf9);
+        border: 1px solid rgba(0, 188, 212, 0.25);
+        border-radius: 40px;
+        font-size: 12px;
+        font-weight: 700;
+        color: #1565a0;
+        letter-spacing: 0.05em;
+        text-transform: uppercase;
+        margin-bottom: 20px;
+    }
+
+    .page-header .badge::before {
+        content: "";
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background: #00bcd4;
+        box-shadow: 0 0 10px #00bcd4;
+        animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+        0%, 100% { opacity: 1; }
+        50% { opacity: 0.4; }
+    }
+
+    .page-header h1 {
+        font-family: 'Space Grotesk', sans-serif;
+        font-size: 38px;
+        color: #0a3d5c;
+        margin-bottom: 12px;
+        letter-spacing: -0.02em;
+        font-weight: 700;
+    }
+
+    .page-header h1 span {
+        background: linear-gradient(120deg, #2196d3 0%, #00bcd4 100%);
+        -webkit-background-clip: text;
+        background-clip: text;
+        -webkit-text-fill-color: transparent;
+    }
+
+    .page-header p {
+        color: #7a9db5;
+        font-size: 15px;
+        max-width: 520px;
+        margin: 0 auto;
+        line-height: 1.7;
+    }
+
+
+    /* ========================================================
+       MAIN CARD
+    ======================================================== */
+
+    .prediction-card {
+        background: #ffffff;
+        border-radius: 24px;
+        padding: 42px;
+        box-shadow: 0 15px 45px rgba(10, 61, 92, 0.08);
+        border: 1px solid rgba(21, 101, 160, 0.10);
+        position: relative;
+        overflow: hidden;
+    }
+
+    .prediction-card::before {
+        content: "";
+        position: absolute;
+        top: -100px;
+        right: -100px;
+        width: 320px;
+        height: 320px;
+        border-radius: 50%;
+        background: radial-gradient(circle, rgba(0, 188, 212, 0.08) 0%, transparent 70%);
+        filter: blur(20px);
+        pointer-events: none;
+    }
+
+
+    /* ========================================================
+       SECTION TITLE (with image)
+    ======================================================== */
+
+    .section-title {
+        font-family: 'Space Grotesk', sans-serif;
+        font-size: 20px;
+        font-weight: 700;
+        color: #0a3d5c;
+        margin-bottom: 28px;
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        position: relative;
+        z-index: 1;
+        letter-spacing: -0.01em;
+    }
+
+    /* ---------- IMAGE ICON (NEW) ---------- */
+    .section-icon {
+        width: 52px;
+        height: 52px;
+        border-radius: 14px;
+        background: linear-gradient(135deg, #2196d3, #00bcd4);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0 8px 20px rgba(33, 150, 211, 0.35);
+        overflow: hidden;
+        flex-shrink: 0;
+        border: 2px solid rgba(255, 255, 255, 0.4);
+    }
+
+    .section-icon img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        display: block;
+    }
+
+
+    /* ========================================================
+       FORM GRID
+    ======================================================== */
+
+    .form-grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 22px;
+        position: relative;
+        z-index: 1;
+    }
+
+
+    /* ========================================================
+       FORM GROUP
+    ======================================================== */
+
+    .form-group {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .form-group.full {
+        grid-column: span 2;
+    }
+
+
+    /* ========================================================
+       LABEL
+    ======================================================== */
+
+    .form-group label {
+        font-size: 13.5px;
+        font-weight: 700;
+        color: #0a3d5c;
+        margin-bottom: 8px;
+        letter-spacing: -0.01em;
+    }
+
+
+    /* ========================================================
+       INPUT / SELECT
+    ======================================================== */
+
+    .form-group input,
+    .form-group select {
+        width: 100%;
+        height: 50px;
+        padding: 0 16px;
+        border: 1.5px solid rgba(21, 101, 160, 0.18);
+        border-radius: 12px;
+        background: linear-gradient(135deg, #f8fcff 0%, #f2f9fe 100%);
+        color: #0a3d5c;
+        font-size: 15px;
+        font-family: 'Inter', sans-serif;
+        font-weight: 500;
+        transition: all 0.25s ease;
+    }
+
+    .form-group input:hover,
+    .form-group select:hover {
+        border-color: rgba(33, 150, 211, 0.40);
+        background: #ffffff;
+    }
+
+    .form-group input:focus,
+    .form-group select:focus {
+        outline: none;
+        border-color: #2196d3;
+        background: #ffffff;
+        box-shadow: 0 0 0 4px rgba(33, 150, 211, 0.12);
+    }
+
+
+    /* ========================================================
+       PLACEHOLDER
+    ======================================================== */
+
+    .form-group input::placeholder {
+        color: #a8c5d6;
+        font-weight: 400;
+    }
+
+
+    /* ========================================================
+       FIELD HELP
+    ======================================================== */
+
+    .field-help {
+        margin-top: 7px;
+        font-size: 12px;
+        color: #7a9db5;
+        font-weight: 500;
+        letter-spacing: 0.005em;
+    }
+
+
+    /* ========================================================
+       PREDICT BUTTON
+    ======================================================== */
+
+    .predict-button-wrapper {
+        margin-top: 38px;
+        display: flex;
+        justify-content: center;
+        position: relative;
+        z-index: 1;
+    }
+
+    .predict-button {
+        min-width: 280px;
+        height: 56px;
+        border: none;
+        border-radius: 14px;
+        background: linear-gradient(135deg, #2196d3, #00bcd4);
+        color: white;
+        font-size: 16px;
+        font-weight: 700;
+        font-family: 'Inter', sans-serif;
+        cursor: pointer;
+        transition: all 0.28s ease;
+        box-shadow: 0 12px 26px rgba(33, 150, 211, 0.35);
+        letter-spacing: 0.01em;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+    }
+
+    .predict-button:hover {
+        background: linear-gradient(135deg, #1e88c7, #2196d3);
+        transform: translateY(-3px);
+        box-shadow: 0 18px 32px rgba(33, 150, 211, 0.45);
+    }
+
+    .predict-button:active {
+        transform: translateY(-1px);
+        box-shadow: 0 10px 22px rgba(33, 150, 211, 0.35);
+    }
+
+
+    /* ========================================================
+       ERROR
+    ======================================================== */
+
+    .error-box {
+        margin-bottom: 28px;
+        padding: 16px 20px;
+        border-radius: 12px;
+        background: linear-gradient(135deg, #ffe3e3, #ffefef);
+        border: 1px solid #fca5a5;
+        border-left: 5px solid #ef5350;
+        color: #a01a1a;
+        font-size: 14px;
+        font-weight: 500;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        position: relative;
+        z-index: 1;
+    }
+
+    .error-box::before {
+        content: "⚠";
+        font-size: 18px;
+    }
+
+
+    /* ========================================================
+       RESULT
+    ======================================================== */
+
+    .result-box {
+        margin-top: 38px;
+        padding: 38px 30px;
+        border-radius: 20px;
+        background:
+            radial-gradient(circle at 50% 0%, rgba(0, 188, 212, 0.10) 0%, transparent 60%),
+            linear-gradient(135deg, #eaf5fb 0%, #d8ecf9 100%);
+        border: 1.5px solid rgba(33, 150, 211, 0.30);
+        text-align: center;
+        position: relative;
+        overflow: hidden;
+        z-index: 1;
+        box-shadow: 0 15px 40px rgba(33, 150, 211, 0.15);
+    }
+
+    .result-box::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 4px;
+        background: linear-gradient(90deg, #2196d3, #00bcd4, #2196d3);
+        background-size: 200% 100%;
+        animation: shine 3s linear infinite;
+    }
+
+    @keyframes shine {
+        0% { background-position: 0% 0; }
+        100% { background-position: 200% 0; }
+    }
+
+
+    .result-icon {
+        width: 68px;
+        height: 68px;
+        margin: 0 auto 18px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #2196d3, #00bcd4);
+        color: white;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 32px;
+        font-weight: 700;
+        box-shadow: 0 12px 28px rgba(33, 150, 211, 0.40);
+        animation: pop 0.5s ease;
+    }
+
+    @keyframes pop {
+        0% { transform: scale(0.6); opacity: 0; }
+        100% { transform: scale(1); opacity: 1; }
+    }
+
+
+    .result-label {
+        font-size: 13px;
+        color: #1565a0;
+        font-weight: 700;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        margin-bottom: 12px;
+    }
+
+
+    .result-value {
+        font-family: 'Space Grotesk', sans-serif;
+        font-size: 30px;
+        font-weight: 700;
+        color: #0a3d5c;
+        margin-bottom: 18px;
+        letter-spacing: -0.02em;
+    }
+
+
+    /* ========================================================
+       CONFIDENCE
+    ======================================================== */
+
+    .confidence {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 14px;
+        color: #3d6987;
+        padding: 10px 22px;
+        background: #ffffff;
+        border-radius: 40px;
+        border: 1px solid rgba(33, 150, 211, 0.25);
+        font-weight: 600;
+    }
+
+    .confidence span {
+        font-weight: 800;
+        color: #2196d3;
+        font-size: 16px;
+    }
+
+
+    /* ========================================================
+       INFO BOX
+    ======================================================== */
+
+    .info-box {
+        margin-top: 28px;
+        padding: 18px 20px;
+        background: linear-gradient(135deg, #eaf5fb 0%, #d8ecf9 100%);
+        border: 1px solid rgba(33, 150, 211, 0.25);
+        border-left: 5px solid #2196d3;
+        border-radius: 12px;
+        color: #1565a0;
+        font-size: 13px;
+        line-height: 1.7;
+        font-weight: 500;
+        display: flex;
+        align-items: flex-start;
+        gap: 10px;
+        position: relative;
+        z-index: 1;
+    }
+
+    .info-box::before {
+        content: "ℹ";
+        font-size: 18px;
+        color: #2196d3;
+        font-weight: 700;
+        line-height: 1;
+        flex-shrink: 0;
+    }
+
+
+    /* ========================================================
+       RESPONSIVE
+    ======================================================== */
+
+    @media (max-width: 850px) {
+
+        .predict-page {
+            padding: 40px 15px;
+        }
+
+        .page-header h1 {
+            font-size: 30px;
+        }
+
+        .page-header p {
+            font-size: 14px;
+        }
+
+        .prediction-card {
+            padding: 28px;
+            border-radius: 20px;
+        }
+
+        .section-title {
+            font-size: 18px;
+        }
+
+        .section-icon {
+            width: 46px;
+            height: 46px;
+        }
+
+        .form-grid {
+            grid-template-columns: 1fr;
+            gap: 18px;
+        }
+
+        .form-group.full {
+            grid-column: span 1;
+        }
+
+        .predict-button {
+            width: 100%;
+            min-width: 0;
+        }
+
+        .result-value {
+            font-size: 24px;
+        }
+
+        .result-icon {
+            width: 60px;
+            height: 60px;
+            font-size: 28px;
+        }
+
+        .result-box {
+            padding: 30px 22px;
+        }
+
+    }
+
+    @media (max-width: 550px) {
+
+        .page-header h1 {
+            font-size: 26px;
+        }
+
+        .prediction-card {
+            padding: 22px;
+        }
+
+        .section-icon {
+            width: 42px;
+            height: 42px;
+            border-radius: 12px;
+        }
+
+        .form-group input,
+        .form-group select {
+            height: 48px;
+            font-size: 14px;
+        }
+
+        .predict-button {
+            height: 52px;
+            font-size: 15px;
+        }
+
+        .result-value {
+            font-size: 22px;
+        }
+
+        .confidence {
+            font-size: 13px;
+            padding: 9px 18px;
+        }
+
+    }
+
+</style>
+
+{% endblock %}
+
+
+{% block content %}
+
+<div class="predict-page">
+
+    <div class="predict-container">
+
+
+        <!-- ==================================================
+             PAGE HEADER
+        =================================================== -->
+
+        <div class="page-header">
+
+            <span class="badge">AI Prediction</span>
+
+            <h1>
+                Kidney Disease <span>Prediction</span>
+            </h1>
+
+            <p>
+                Enter the patient's health information
+                to predict the kidney condition using our ML model.
+            </p>
+
+        </div>
+
+
+        <!-- ==================================================
+             PREDICTION CARD
+        =================================================== -->
+
+        <div class="prediction-card">
+
+
+            <!-- ==================================================
+                 ERROR MESSAGE
+            =================================================== -->
+
+            {% if error %}
+
+                <div class="error-box">
+                    {{ error }}
+                </div>
+
+            {% endif %}
+
+
+            <!-- ==================================================
+                 FORM
+            =================================================== -->
+
+            <form method="POST">
+
+                {% csrf_token %}
+
+
+                <!-- ==============================================
+                     SECTION TITLE (🖼️ WITH IMAGE)
+                =============================================== -->
+
+                <div class="section-title">
+
+                    <div class="section-icon">
+                        <img src="{% static 'images/kidney-icon.png' %}" alt="Patient Info">
+                    </div>
+
+                    Patient Information
+
+                </div>
+
+
+                <!-- ==============================================
+                     FORM GRID
+                =============================================== -->
+
+                <div class="form-grid">
+
+
+                    <!-- AGE -->
+
+                    <div class="form-group">
+
+                        <label for="age">
+                            Age
+                        </label>
+
+                        <input
+                            type="number"
+                            id="age"
+                            name="age"
+                            placeholder="Enter age"
+                            min="1"
+                            max="120"
+                            step="any"
+                            value="{{ request.POST.age|default:'' }}"
+                            required
+                        >
+
+                        <span class="field-help">
+                            Age in years
+                        </span>
+
+                    </div>
+
+
+                    <!-- GENDER -->
+
+                    <div class="form-group">
+
+                        <label for="gender">
+                            Gender
+                        </label>
+
+                        <select
+                            id="gender"
+                            name="gender"
+                            required
+                        >
+
+                            <option value="">
+                                Select Gender
+                            </option>
+
+                            <option
+                                value="0"
+                                {% if request.POST.gender == "0" %}
+                                    selected
+                                {% endif %}
+                            >
+                                Female
+                            </option>
+
+                            <option
+                                value="1"
+                                {% if request.POST.gender == "1" %}
+                                    selected
+                                {% endif %}
+                            >
+                                Male
+                            </option>
+
+                        </select>
+
+                        <span class="field-help">
+                            Select biological sex
+                        </span>
+
+                    </div>
+
+
+                    <!-- BMI -->
+
+                    <div class="form-group">
+
+                        <label for="bmi">
+                            BMI
+                        </label>
+
+                        <input
+                            type="number"
+                            id="bmi"
+                            name="bmi"
+                            placeholder="Example: 24.5"
+                            min="1"
+                            max="100"
+                            step="0.01"
+                            value="{{ request.POST.bmi|default:'' }}"
+                            required
+                        >
+
+                        <span class="field-help">
+                            Body Mass Index
+                        </span>
+
+                    </div>
+
+
+                    <!-- SYSTOLIC BP -->
+
+                    <div class="form-group">
+
+                        <label for="systolic_bp">
+                            Systolic Blood Pressure
+                        </label>
+
+                        <input
+                            type="number"
+                            id="systolic_bp"
+                            name="systolic_bp"
+                            placeholder="Example: 120"
+                            min="50"
+                            max="250"
+                            step="any"
+                            value="{{ request.POST.systolic_bp|default:'' }}"
+                            required
+                        >
+
+                        <span class="field-help">
+                            Systolic BP in mmHg
+                        </span>
+
+                    </div>
+
+
+                    <!-- SERUM CREATININE -->
+
+                    <div class="form-group">
+
+                        <label for="serum_creatinine">
+                            Serum Creatinine
+                        </label>
+
+                        <input
+                            type="number"
+                            id="serum_creatinine"
+                            name="serum_creatinine"
+                            placeholder="Example: 1.2"
+                            min="0"
+                            max="20"
+                            step="0.01"
+                            value="{{ request.POST.serum_creatinine|default:'' }}"
+                            required
+                        >
+
+                        <span class="field-help">
+                            Serum creatinine level
+                        </span>
+
+                    </div>
+
+
+                    <!-- BUN -->
+
+                    <div class="form-group">
+
+                        <label for="blood_urea_nitrogen">
+                            Blood Urea Nitrogen
+                        </label>
+
+                        <input
+                            type="number"
+                            id="blood_urea_nitrogen"
+                            name="blood_urea_nitrogen"
+                            placeholder="Example: 20"
+                            min="0"
+                            max="300"
+                            step="0.01"
+                            value="{{ request.POST.blood_urea_nitrogen|default:'' }}"
+                            required
+                        >
+
+                        <span class="field-help">
+                            BUN level
+                        </span>
+
+                    </div>
+
+
+                    <!-- eGFR -->
+
+                    <div class="form-group">
+
+                        <label for="egfr">
+                            eGFR
+                        </label>
+
+                        <input
+                            type="number"
+                            id="egfr"
+                            name="egfr"
+                            placeholder="Example: 90"
+                            min="0"
+                            max="200"
+                            step="0.01"
+                            value="{{ request.POST.egfr|default:'' }}"
+                            required
+                        >
+
+                        <span class="field-help">
+                            Estimated glomerular filtration rate
+                        </span>
+
+                    </div>
+
+
+                    <!-- URINE ALBUMIN -->
+
+                    <div class="form-group">
+
+                        <label for="urine_albumin">
+                            Urine Albumin
+                        </label>
+
+                        <input
+                            type="number"
+                            id="urine_albumin"
+                            name="urine_albumin"
+                            placeholder="Example: 10"
+                            min="0"
+                            max="1000"
+                            step="0.01"
+                            value="{{ request.POST.urine_albumin|default:'' }}"
+                            required
+                        >
+
+                        <span class="field-help">
+                            Urine albumin level
+                        </span>
+
+                    </div>
+
+
+                    <!-- ACR -->
+
+                    <div class="form-group">
+
+                        <label for="albumin_creatinine_ratio">
+                            Albumin Creatinine Ratio
+                        </label>
+
+                        <input
+                            type="number"
+                            id="albumin_creatinine_ratio"
+                            name="albumin_creatinine_ratio"
+                            placeholder="Example: 30"
+                            min="0"
+                            max="5000"
+                            step="0.01"
+                            value="{{ request.POST.albumin_creatinine_ratio|default:'' }}"
+                            required
+                        >
+
+                        <span class="field-help">
+                            Albumin-to-creatinine ratio
+                        </span>
+
+                    </div>
+
+
+                    <!-- DIABETES -->
+
+                    <div class="form-group">
+
+                        <label for="diabetes">
+                            Diabetes
+                        </label>
+
+                        <select
+                            id="diabetes"
+                            name="diabetes"
+                            required
+                        >
+
+                            <option value="">
+                                Select Diabetes Status
+                            </option>
+
+                            <option
+                                value="Yes"
+                                {% if request.POST.diabetes == "Yes" %}
+                                    selected
+                                {% endif %}
+                            >
+                                Yes
+                            </option>
+
+                            <option
+                                value="No"
+                                {% if request.POST.diabetes == "No" %}
+                                    selected
+                                {% endif %}
+                            >
+                                No
+                            </option>
+
+                        </select>
+
+                        <span class="field-help">
+                            Select whether the patient has diabetes
+                        </span>
+
+                    </div>
+
+                </div>
+
+
+                <!-- ==================================================
+                     PREDICT BUTTON
+                =================================================== -->
+
+                <div class="predict-button-wrapper">
+
+                    <button
+                        type="submit"
+                        class="predict-button"
+                    >
+                        🔍 Predict Kidney Condition
+                    </button>
+
+                </div>
+
+            </form>
+
+
+            <!-- ==================================================
+                 RESULT
+            =================================================== -->
+
+            {% if prediction %}
+
+                <div class="result-box">
+
+                    <div class="result-icon">
+                        ✓
+                    </div>
+
+                    <div class="result-label">
+                        Predicted Kidney Condition
+                    </div>
+
+                    <div class="result-value">
+                        {{ prediction }}
+                    </div>
+
+                    {% if confidence %}
+
+                        <div class="confidence">
+                            Model Confidence:
+                            <span>{{ confidence }}%</span>
+                        </div>
+
+                    {% endif %}
+
+                </div>
+
+            {% endif %}
+        
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

@@ -1,0 +1,634 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Register | KidneyAI</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+
+    <style>
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        /* ============================================================
+           FULL-SCREEN PAGE — NO NAVBAR
+        ============================================================ */
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background:
+                radial-gradient(circle at 15% 10%, #dbeeff 0%, transparent 45%),
+                radial-gradient(circle at 85% 90%, #d4ecf7 0%, transparent 45%),
+                linear-gradient(180deg, #f5fbff 0%, #eaf4fb 100%);
+            background-attachment: fixed;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 40px 20px;
+            -webkit-font-smoothing: antialiased;
+        }
+
+
+        /* ============================================================
+           WRAPPER
+        ============================================================ */
+
+        .auth-wrapper {
+            width: 100%;
+            max-width: 1050px;
+            display: grid;
+            grid-template-columns: 1fr 1.05fr;
+            background: #ffffff;
+            border-radius: 28px;
+            box-shadow: 0 25px 60px rgba(10, 61, 92, 0.12);
+            border: 1px solid rgba(21, 101, 160, 0.10);
+            overflow: hidden;
+            position: relative;
+        }
+
+        .auth-wrapper::before {
+            content: "";
+            position: absolute;
+            top: -120px;
+            right: -120px;
+            width: 340px;
+            height: 340px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(0, 188, 212, 0.10) 0%, transparent 70%);
+            filter: blur(30px);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+
+        /* ============================================================
+           LEFT — BRAND PANEL
+        ============================================================ */
+
+        .auth-brand {
+            background: linear-gradient(155deg, #1565a0 0%, #0a3d5c 100%);
+            color: #ffffff;
+            padding: 60px 50px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .auth-brand::before {
+            content: "";
+            position: absolute;
+            top: -100px;
+            right: -100px;
+            width: 300px;
+            height: 300px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(0, 188, 212, 0.35) 0%, transparent 70%);
+            filter: blur(20px);
+            pointer-events: none;
+        }
+
+        .auth-brand::after {
+            content: "";
+            position: absolute;
+            bottom: -80px;
+            left: -80px;
+            width: 260px;
+            height: 260px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(33, 150, 211, 0.40) 0%, transparent 70%);
+            filter: blur(20px);
+            pointer-events: none;
+        }
+
+        .brand-content {
+            position: relative;
+            z-index: 1;
+        }
+
+        /* ---------- KIDNEY IMAGE ICON ---------- */
+        .brand-icon {
+            width: 90px;
+            height: 90px;
+            border-radius: 22px;
+            background: linear-gradient(135deg, #2196d3, #00bcd4);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 15px 35px rgba(0, 188, 212, 0.45);
+            margin-bottom: 30px;
+            overflow: hidden;
+            border: 3px solid rgba(255, 255, 255, 0.25);
+        }
+
+        .brand-icon img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+
+        .brand-title {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 32px;
+            font-weight: 700;
+            letter-spacing: -0.02em;
+            margin-bottom: 16px;
+            line-height: 1.2;
+        }
+
+        .brand-title span {
+            background: linear-gradient(120deg, #4dd0e1, #00bcd4);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .brand-text {
+            font-size: 15px;
+            line-height: 1.8;
+            color: #c7e6f5;
+            margin-bottom: 32px;
+            max-width: 340px;
+        }
+
+        .brand-features {
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+        }
+
+        .brand-feature {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 14px;
+            color: #e0f0fa;
+            font-weight: 500;
+        }
+
+        .brand-feature-icon {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #2196d3, #00bcd4);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            color: #ffffff;
+            font-weight: 700;
+            flex-shrink: 0;
+            box-shadow: 0 4px 10px rgba(0, 188, 212, 0.40);
+        }
+
+
+        /* ============================================================
+           RIGHT — FORM PANEL
+        ============================================================ */
+
+        .auth-form-panel {
+            padding: 50px 50px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            position: relative;
+            z-index: 1;
+        }
+
+        .auth-form-header {
+            margin-bottom: 26px;
+        }
+
+        .auth-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 7px 14px;
+            background: linear-gradient(135deg, #eaf5fb, #d8ecf9);
+            border: 1px solid rgba(0, 188, 212, 0.25);
+            border-radius: 40px;
+            font-size: 11px;
+            font-weight: 700;
+            color: #1565a0;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            margin-bottom: 18px;
+        }
+
+        .auth-badge::before {
+            content: "";
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            background: #00bcd4;
+            box-shadow: 0 0 8px #00bcd4;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.4; }
+        }
+
+        .auth-form-header h1 {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 28px;
+            color: #0a3d5c;
+            margin-bottom: 8px;
+            letter-spacing: -0.02em;
+            font-weight: 700;
+        }
+
+        .auth-form-header p {
+            color: #7a9db5;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+
+        /* ============================================================
+           FORM
+        ============================================================ */
+
+        .auth-form .form-group {
+            margin-bottom: 15px;
+        }
+
+        .auth-form label {
+            display: block;
+            font-size: 13px;
+            font-weight: 700;
+            color: #0a3d5c;
+            margin-bottom: 7px;
+            letter-spacing: -0.01em;
+        }
+
+        .auth-form input {
+            width: 100%;
+            height: 46px;
+            padding: 0 16px;
+            border: 1.5px solid rgba(21, 101, 160, 0.18);
+            border-radius: 12px;
+            background: linear-gradient(135deg, #f8fcff 0%, #f2f9fe 100%);
+            color: #0a3d5c;
+            font-size: 14.5px;
+            font-family: 'Inter', sans-serif;
+            font-weight: 500;
+            transition: all 0.25s ease;
+        }
+
+        .auth-form input:hover {
+            border-color: rgba(33, 150, 211, 0.40);
+            background: #ffffff;
+        }
+
+        .auth-form input:focus {
+            outline: none;
+            border-color: #2196d3;
+            background: #ffffff;
+            box-shadow: 0 0 0 4px rgba(33, 150, 211, 0.12);
+        }
+
+        .auth-form input::placeholder {
+            color: #a8c5d6;
+            font-weight: 400;
+        }
+
+
+        /* ============================================================
+           REGISTER BUTTON
+        ============================================================ */
+
+        .auth-submit {
+            width: 100%;
+            height: 50px;
+            margin-top: 8px;
+            border: none;
+            border-radius: 14px;
+            background: linear-gradient(135deg, #2196d3, #00bcd4);
+            color: #ffffff;
+            font-size: 15.5px;
+            font-weight: 700;
+            font-family: 'Inter', sans-serif;
+            cursor: pointer;
+            transition: all 0.28s ease;
+            box-shadow: 0 12px 26px rgba(33, 150, 211, 0.35);
+            letter-spacing: 0.01em;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .auth-submit:hover {
+            background: linear-gradient(135deg, #1e88c7, #2196d3);
+            transform: translateY(-2px);
+            box-shadow: 0 18px 32px rgba(33, 150, 211, 0.45);
+        }
+
+        .auth-submit:active {
+            transform: translateY(0);
+            box-shadow: 0 10px 22px rgba(33, 150, 211, 0.35);
+        }
+
+
+        /* ============================================================
+           BOTTOM LINK
+        ============================================================ */
+
+        .auth-footer-link {
+            margin-top: 20px;
+            text-align: center;
+            font-size: 14px;
+            color: #7a9db5;
+            font-weight: 500;
+        }
+
+        .auth-footer-link a {
+            color: #2196d3;
+            text-decoration: none;
+            font-weight: 700;
+            margin-left: 4px;
+            transition: color 0.2s ease;
+        }
+
+        .auth-footer-link a:hover {
+            color: #1565a0;
+            text-decoration: underline;
+        }
+
+
+        /* ============================================================
+           ERROR / MESSAGES
+        ============================================================ */
+
+        .auth-error {
+            margin-bottom: 18px;
+            padding: 14px 18px;
+            border-radius: 12px;
+            background: linear-gradient(135deg, #ffe3e3, #ffefef);
+            border: 1px solid #fca5a5;
+            border-left: 5px solid #ef5350;
+            color: #a01a1a;
+            font-size: 13.5px;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .auth-error::before {
+            content: "⚠";
+            font-size: 16px;
+            font-weight: 700;
+            flex-shrink: 0;
+        }
+
+        .auth-success {
+            margin-bottom: 18px;
+            padding: 14px 18px;
+            border-radius: 12px;
+            background: linear-gradient(135deg, #d9f7e6, #e6fff1);
+            border: 1px solid #86efac;
+            border-left: 5px solid #10b981;
+            color: #0b6b3a;
+            font-size: 13.5px;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .auth-success::before {
+            content: "✓";
+            font-size: 16px;
+            font-weight: 700;
+            flex-shrink: 0;
+        }
+
+
+        /* ============================================================
+           RESPONSIVE
+        ============================================================ */
+
+        @media (max-width: 900px) {
+            body { padding: 30px 18px; }
+
+            .auth-wrapper {
+                grid-template-columns: 1fr;
+                max-width: 540px;
+            }
+
+            .auth-brand { padding: 40px 35px; }
+
+            .brand-icon {
+                width: 75px;
+                height: 75px;
+                border-radius: 18px;
+                margin-bottom: 22px;
+            }
+
+            .brand-title { font-size: 26px; }
+            .brand-text { font-size: 14px; margin-bottom: 24px; }
+
+            .brand-features {
+                flex-direction: row;
+                flex-wrap: wrap;
+                gap: 10px;
+            }
+
+            .brand-feature {
+                font-size: 12.5px;
+                padding: 6px 12px;
+                background: rgba(255, 255, 255, 0.10);
+                border-radius: 40px;
+            }
+
+            .auth-form-panel { padding: 40px 35px; }
+            .auth-form-header h1 { font-size: 25px; }
+        }
+
+        @media (max-width: 550px) {
+            body { padding: 20px 14px; }
+
+            .auth-brand { padding: 32px 25px; }
+            .brand-title { font-size: 22px; }
+
+            .brand-icon {
+                width: 65px;
+                height: 65px;
+                border-radius: 16px;
+            }
+
+            .auth-form-panel { padding: 32px 25px; }
+            .auth-form-header h1 { font-size: 22px; }
+
+            .auth-form input { height: 46px; font-size: 14px; }
+            .auth-submit { height: 48px; font-size: 15px; }
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+<div class="auth-wrapper">
+
+
+    <!-- ==================================================
+         LEFT — BRAND PANEL
+    =================================================== -->
+
+    <div class="auth-brand">
+
+        <div class="brand-content">
+
+            <!-- 🖼️ KIDNEY IMAGE ICON -->
+            <div class="brand-icon">
+                <img src="{% static 'images/kidney-icon.png' %}" alt="KidneyAI">
+            </div>
+
+            <h2 class="brand-title">
+                Join <span>KidneyAI</span>
+            </h2>
+
+            <p class="brand-text">
+                Create your free account to start using
+                AI-powered kidney disease prediction and
+                track your prediction history.
+            </p>
+
+            <div class="brand-features">
+
+                <div class="brand-feature">
+                    <span class="brand-feature-icon">✓</span>
+                    Free Forever Account
+                </div>
+
+                <div class="brand-feature">
+                    <span class="brand-feature-icon">✓</span>
+                    Instant AI Predictions
+                </div>
+
+                <div class="brand-feature">
+                    <span class="brand-feature-icon">✓</span>
+                    Secure &amp; Private
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- ==================================================
+         RIGHT — FORM PANEL
+    =================================================== -->
+
+    <div class="auth-form-panel">
+
+        <div class="auth-form-header">
+
+            <span class="auth-badge">Get Started</span>
+
+            <h1>Create your account</h1>
+
+            <p>Fill in the details below to start using KidneyAI.</p>
+
+        </div>
+
+
+        {% if messages %}
+            {% for message in messages %}
+                <div class="{% if message.tags == 'success' %}auth-success{% else %}auth-error{% endif %}">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endif %}
+
+
+        <form method="POST" class="auth-form">
+
+            {% csrf_token %}
+
+            <div class="form-group">
+                <label for="username">Username</label>
+                <input
+                    type="text"
+                    id="username"
+                    name="username"
+                    placeholder="Choose a username"
+                    autocomplete="username"
+                    required
+                >
+            </div>
+
+            <div class="form-group">
+                <label for="email">Email</label>
+                <input
+                    type="email"
+                    id="email"
+                    name="email"
+                    placeholder="you@example.com"
+                    autocomplete="email"
+                    required
+                >
+            </div>
+
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input
+                    type="password"
+                    id="password"
+                    name="password"
+                    placeholder="Create a strong password"
+                    autocomplete="new-password"
+                    required
+                >
+            </div>
+
+            <div class="form-group">
+                <label for="confirm_password">Confirm Password</label>
+                <input
+                    type="password"
+                    id="confirm_password"
+                    name="confirm_password"
+                    placeholder="Re-enter your password"
+                    autocomplete="new-password"
+                    required
+                >
+            </div>
+
+            <button type="submit" class="auth-submit">
+                ✨ Create Account
+            </button>
+
+        </form>
+
+
+        <div class="auth-footer-link">
+            Already have an account?
+            <a href="{% url 'login' %}">Login</a>
+        </div>
+
+    </div>
+
+</div>
+
+</body>
+</html>

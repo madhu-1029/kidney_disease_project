@@ -1,0 +1,779 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}
+Prediction History | KidneyAI
+{% endblock %}
+
+
+{% block extra_css %}
+
+<style>
+
+    /* ========================================================
+       PAGE
+    ======================================================== */
+
+    .history-page {
+        min-height: calc(100vh - 142px);
+        padding: 60px 20px;
+        background:
+            radial-gradient(circle at 15% 10%, #dbeeff 0%, transparent 45%),
+            radial-gradient(circle at 85% 90%, #d4ecf7 0%, transparent 45%),
+            linear-gradient(180deg, #f5fbff 0%, #eaf4fb 100%);
+        background-attachment: fixed;
+    }
+
+
+    /* ========================================================
+       CONTAINER
+    ======================================================== */
+
+    .history-container {
+        width: 100%;
+        max-width: 1400px;
+        margin: 0 auto;
+    }
+
+
+    /* ========================================================
+       HEADER
+    ======================================================== */
+
+    .history-header {
+        text-align: center;
+        margin-bottom: 42px;
+        position: relative;
+    }
+
+    .history-header .badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 8px 18px;
+        background: linear-gradient(135deg, #eaf5fb, #d8ecf9);
+        border: 1px solid rgba(0, 188, 212, 0.25);
+        border-radius: 40px;
+        font-size: 12px;
+        font-weight: 700;
+        color: #1565a0;
+        letter-spacing: 0.05em;
+        text-transform: uppercase;
+        margin-bottom: 20px;
+    }
+
+    .history-header .badge::before {
+        content: "";
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background: #00bcd4;
+        box-shadow: 0 0 10px #00bcd4;
+        animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+        0%, 100% { opacity: 1; }
+        50% { opacity: 0.4; }
+    }
+
+    .history-header h1 {
+        font-family: 'Space Grotesk', sans-serif;
+        font-size: 38px;
+        color: #0a3d5c;
+        margin-bottom: 12px;
+        letter-spacing: -0.02em;
+        font-weight: 700;
+    }
+
+    .history-header h1 span {
+        background: linear-gradient(120deg, #2196d3 0%, #00bcd4 100%);
+        -webkit-background-clip: text;
+        background-clip: text;
+        -webkit-text-fill-color: transparent;
+    }
+
+    .history-header p {
+        color: #7a9db5;
+        font-size: 15px;
+        max-width: 520px;
+        margin: 0 auto;
+        line-height: 1.7;
+    }
+
+
+    /* ========================================================
+       MESSAGE / ALERT
+    ======================================================== */
+
+    .alert {
+        padding: 16px 20px;
+        border-radius: 12px;
+        margin-bottom: 22px;
+        font-size: 14px;
+        font-weight: 500;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        border-left: 5px solid transparent;
+    }
+
+    .alert.success {
+        background: linear-gradient(135deg, #d9f7e6, #e6fff1);
+        color: #0b6b3a;
+        border-left-color: #10b981;
+    }
+
+    .alert.success::before {
+        content: "✓";
+        font-weight: 700;
+        font-size: 16px;
+    }
+
+    .alert.error {
+        background: linear-gradient(135deg, #ffe3e3, #ffefef);
+        color: #a01a1a;
+        border-left-color: #ef5350;
+    }
+
+    .alert.error::before {
+        content: "⚠";
+        font-weight: 700;
+        font-size: 16px;
+    }
+
+
+    /* ========================================================
+       TABLE CARD
+    ======================================================== */
+
+    .history-card {
+        background: #ffffff;
+        border-radius: 24px;
+        border: 1px solid rgba(21, 101, 160, 0.10);
+        box-shadow: 0 15px 45px rgba(10, 61, 92, 0.08);
+        overflow: hidden;
+        position: relative;
+    }
+
+    /* Decorative top accent bar */
+    .history-card::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 4px;
+        background: linear-gradient(90deg, #2196d3, #00bcd4);
+        z-index: 2;
+    }
+
+
+    /* ========================================================
+       TABLE WRAPPER
+    ======================================================== */
+
+    .table-wrapper {
+        width: 100%;
+        overflow-x: auto;
+    }
+
+    /* Custom scrollbar */
+    .table-wrapper::-webkit-scrollbar {
+        height: 8px;
+    }
+
+    .table-wrapper::-webkit-scrollbar-track {
+        background: #f0f7fc;
+    }
+
+    .table-wrapper::-webkit-scrollbar-thumb {
+        background: linear-gradient(90deg, #2196d3, #00bcd4);
+        border-radius: 4px;
+    }
+
+    .table-wrapper::-webkit-scrollbar-thumb:hover {
+        background: linear-gradient(90deg, #1e88c7, #2196d3);
+    }
+
+
+    /* ========================================================
+       TABLE
+    ======================================================== */
+
+    .history-table {
+        width: 100%;
+        border-collapse: collapse;
+        min-width: 1250px;
+    }
+
+    .history-table thead {
+        background: linear-gradient(135deg, #1565a0 0%, #0a3d5c 100%);
+        color: white;
+        position: sticky;
+        top: 0;
+        z-index: 1;
+    }
+
+    .history-table th {
+        padding: 18px 12px;
+        font-size: 12.5px;
+        font-weight: 700;
+        text-align: center;
+        white-space: nowrap;
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+        border-right: 1px solid rgba(255, 255, 255, 0.06);
+    }
+
+    .history-table th:last-child {
+        border-right: none;
+    }
+
+    .history-table td {
+        padding: 16px 12px;
+        border-bottom: 1px solid rgba(21, 101, 160, 0.08);
+        text-align: center;
+        font-size: 13.5px;
+        color: #3d6987;
+        white-space: nowrap;
+        font-weight: 500;
+    }
+
+    .history-table tbody tr {
+        transition: background 0.2s ease;
+    }
+
+    .history-table tbody tr:hover {
+        background: linear-gradient(135deg, #f5fbff 0%, #eaf5fb 100%);
+    }
+
+    .history-table tbody tr:last-child td {
+        border-bottom: none;
+    }
+
+
+    /* ========================================================
+       PREDICTION BADGE
+    ======================================================== */
+
+    .prediction-badge {
+        display: inline-block;
+        padding: 8px 14px;
+        border-radius: 20px;
+        background: linear-gradient(135deg, #eaf5fb, #d8ecf9);
+        color: #1565a0;
+        font-weight: 700;
+        font-size: 12px;
+        border: 1px solid rgba(33, 150, 211, 0.20);
+        letter-spacing: -0.01em;
+        white-space: nowrap;
+    }
+
+
+    /* ========================================================
+       CONFIDENCE
+    ======================================================== */
+
+    .confidence {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 7px 14px;
+        border-radius: 20px;
+        background: linear-gradient(135deg, #d9f7e6, #e6fff1);
+        color: #0b6b3a;
+        font-weight: 700;
+        font-size: 12.5px;
+        border: 1px solid rgba(16, 185, 129, 0.20);
+    }
+
+    .confidence::before {
+        content: "";
+        width: 6px;
+        height: 6px;
+        border-radius: 50%;
+        background: #10b981;
+        box-shadow: 0 0 6px #10b981;
+    }
+
+
+    /* ========================================================
+       DATE
+    ======================================================== */
+
+    .date-main {
+        display: block;
+        color: #0a3d5c;
+        font-weight: 700;
+        font-size: 13px;
+    }
+
+    .date-time {
+        display: block;
+        color: #7a9db5;
+        font-size: 11.5px;
+        font-weight: 500;
+        margin-top: 3px;
+    }
+
+
+    /* ========================================================
+       DELETE BUTTON
+    ======================================================== */
+
+    .delete-form {
+        margin: 0;
+    }
+
+    .delete-btn {
+        border: none;
+        padding: 9px 16px;
+        border-radius: 10px;
+        background: linear-gradient(135deg, #ef5350, #e04343);
+        color: white;
+        font-size: 12.5px;
+        font-weight: 700;
+        cursor: pointer;
+        transition: all 0.25s ease;
+        box-shadow: 0 4px 12px rgba(239, 83, 80, 0.25);
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        letter-spacing: -0.01em;
+    }
+
+    .delete-btn:hover {
+        background: linear-gradient(135deg, #e53935, #d32f2f);
+        transform: translateY(-2px);
+        box-shadow: 0 8px 18px rgba(239, 83, 80, 0.40);
+    }
+
+    .delete-btn:active {
+        transform: translateY(0);
+        box-shadow: 0 4px 10px rgba(239, 83, 80, 0.25);
+    }
+
+
+    /* ========================================================
+       EMPTY STATE
+    ======================================================== */
+
+    .empty-box {
+        text-align: center;
+        padding: 85px 30px;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .empty-box::before {
+        content: "";
+        position: absolute;
+        top: -80px;
+        right: -80px;
+        width: 260px;
+        height: 260px;
+        border-radius: 50%;
+        background: radial-gradient(circle, rgba(0, 188, 212, 0.10) 0%, transparent 70%);
+        filter: blur(20px);
+        pointer-events: none;
+    }
+
+    .empty-box::after {
+        content: "";
+        position: absolute;
+        bottom: -80px;
+        left: -80px;
+        width: 260px;
+        height: 260px;
+        border-radius: 50%;
+        background: radial-gradient(circle, rgba(33, 150, 211, 0.10) 0%, transparent 70%);
+        filter: blur(20px);
+        pointer-events: none;
+    }
+
+    .empty-icon {
+        width: 90px;
+        height: 90px;
+        margin: 0 auto 24px;
+        border-radius: 24px;
+        background: linear-gradient(135deg, #2196d3, #00bcd4);
+        color: #ffffff;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 40px;
+        box-shadow: 0 15px 35px rgba(33, 150, 211, 0.30);
+        position: relative;
+        z-index: 1;
+        animation: float 3s ease-in-out infinite;
+    }
+
+    @keyframes float {
+        0%, 100% { transform: translateY(0); }
+        50% { transform: translateY(-8px); }
+    }
+
+    .empty-box h2 {
+        font-family: 'Space Grotesk', sans-serif;
+        color: #0a3d5c;
+        font-size: 26px;
+        margin-bottom: 12px;
+        font-weight: 700;
+        letter-spacing: -0.01em;
+        position: relative;
+        z-index: 1;
+    }
+
+    .empty-box p {
+        color: #7a9db5;
+        font-size: 15px;
+        margin-bottom: 28px;
+        line-height: 1.7;
+        max-width: 400px;
+        margin-left: auto;
+        margin-right: auto;
+        position: relative;
+        z-index: 1;
+    }
+
+    .predict-link {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 14px 28px;
+        background: linear-gradient(135deg, #2196d3, #00bcd4);
+        color: white;
+        text-decoration: none;
+        border-radius: 12px;
+        font-weight: 700;
+        font-size: 15px;
+        transition: all 0.28s ease;
+        box-shadow: 0 12px 26px rgba(33, 150, 211, 0.35);
+        position: relative;
+        z-index: 1;
+    }
+
+    .predict-link:hover {
+        background: linear-gradient(135deg, #1e88c7, #2196d3);
+        transform: translateY(-3px);
+        box-shadow: 0 18px 32px rgba(33, 150, 211, 0.45);
+    }
+
+
+    /* ========================================================
+       RESPONSIVE
+    ======================================================== */
+
+    @media (max-width: 850px) {
+
+        .history-page {
+            padding: 40px 15px;
+        }
+
+        .history-header h1 {
+            font-size: 30px;
+        }
+
+        .history-header p {
+            font-size: 14px;
+        }
+
+        .history-card {
+            border-radius: 20px;
+        }
+
+        .empty-box {
+            padding: 65px 22px;
+        }
+
+        .empty-icon {
+            width: 78px;
+            height: 78px;
+            font-size: 34px;
+        }
+
+        .empty-box h2 {
+            font-size: 22px;
+        }
+
+    }
+
+    @media (max-width: 550px) {
+
+        .history-header h1 {
+            font-size: 26px;
+        }
+
+        .empty-box {
+            padding: 55px 20px;
+        }
+
+        .empty-box p {
+            font-size: 14px;
+        }
+
+        .predict-link {
+            padding: 12px 22px;
+            font-size: 14px;
+        }
+
+    }
+
+</style>
+
+{% endblock %}
+
+
+{% block content %}
+
+<div class="history-page">
+
+    <div class="history-container">
+
+
+        <!-- ==================================================
+             HEADER
+        =================================================== -->
+
+        <div class="history-header">
+
+            <span class="badge">Your Records</span>
+
+            <h1>
+                Prediction <span>History</span>
+            </h1>
+
+            <p>
+                View all your previous kidney disease predictions at a glance.
+            </p>
+
+        </div>
+
+
+        <!-- ==================================================
+             DJANGO MESSAGES
+        =================================================== -->
+
+        {% if messages %}
+
+            {% for message in messages %}
+
+                <div class="alert {{ message.tags }}">
+                    {{ message }}
+                </div>
+
+            {% endfor %}
+
+        {% endif %}
+
+
+        <!-- ==================================================
+             HISTORY EXISTS
+        =================================================== -->
+
+        {% if histories %}
+
+            <div class="history-card">
+
+                <div class="table-wrapper">
+
+                    <table class="history-table">
+
+                        <thead>
+
+                            <tr>
+
+                                <th>#</th>
+                                <th>Date &amp; Time</th>
+                                <th>Age</th>
+                                <th>Gender</th>
+                                <th>BMI</th>
+                                <th>Systolic BP</th>
+                                <th>Creatinine</th>
+                                <th>BUN</th>
+                                <th>eGFR</th>
+                                <th>Urine Albumin</th>
+                                <th>ACR</th>
+                                <th>Diabetes</th>
+                                <th>Prediction</th>
+                                <th>Confidence</th>
+                                <th>Action</th>
+
+                            </tr>
+
+                        </thead>
+
+
+                        <tbody>
+
+                            {% for item in histories %}
+
+                                <tr>
+
+                                    <!-- NUMBER -->
+                                    <td>{{ forloop.counter }}</td>
+
+
+                                    <!-- DATE -->
+                                    <td>
+                                        <span class="date-main">
+                                            {{ item.created_at|date:"d M Y" }}
+                                        </span>
+                                        <span class="date-time">
+                                            {{ item.created_at|time:"h:i A" }}
+                                        </span>
+                                    </td>
+
+
+                                    <!-- AGE -->
+                                    <td>{{ item.age }}</td>
+
+
+                                    <!-- GENDER -->
+                                    <td>
+                                        {% if item.gender == 1 %}
+                                            Male
+                                        {% else %}
+                                            Female
+                                        {% endif %}
+                                    </td>
+
+
+                                    <!-- BMI -->
+                                    <td>{{ item.bmi }}</td>
+
+
+                                    <!-- SYSTOLIC BP -->
+                                    <td>{{ item.systolic_bp }}</td>
+
+
+                                    <!-- CREATININE -->
+                                    <td>{{ item.serum_creatinine }}</td>
+
+
+                                    <!-- BUN -->
+                                    <td>{{ item.blood_urea_nitrogen }}</td>
+
+
+                                    <!-- eGFR -->
+                                    <td>{{ item.egfr }}</td>
+
+
+                                    <!-- URINE ALBUMIN -->
+                                    <td>{{ item.urine_albumin }}</td>
+
+
+                                    <!-- ACR -->
+                                    <td>{{ item.albumin_creatinine_ratio }}</td>
+
+
+                                    <!-- DIABETES -->
+                                    <td>{{ item.diabetes }}</td>
+
+
+                                    <!-- PREDICTION -->
+                                    <td>
+                                        <span class="prediction-badge">
+                                            {{ item.prediction }}
+                                        </span>
+                                    </td>
+
+
+                                    <!-- CONFIDENCE -->
+                                    <td>
+                                        <span class="confidence">
+                                            {{ item.confidence }}%
+                                        </span>
+                                    </td>
+
+
+                                    <!-- DELETE -->
+                                    <td>
+                                        <form
+                                            method="POST"
+                                            action="{% url 'delete_history' item.id %}"
+                                            class="delete-form"
+                                            onsubmit="return confirmDelete();"
+                                        >
+                                            {% csrf_token %}
+                                            <button
+                                                type="submit"
+                                                class="delete-btn"
+                                            >
+                                                🗑 Delete
+                                            </button>
+                                        </form>
+                                    </td>
+
+                                </tr>
+
+                            {% endfor %}
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+            </div>
+
+
+        <!-- ==================================================
+             NO HISTORY
+        =================================================== -->
+
+        {% else %}
+
+            <div class="history-card">
+
+                <div class="empty-box">
+
+                    <div class="empty-icon">
+                        📋
+                    </div>
+
+                    <h2>
+                        No Prediction History Yet
+                    </h2>
+
+                    <p>
+                        You have not made any kidney disease
+                        predictions yet. Start your first prediction
+                        to see results here.
+                    </p>
+
+                    <a
+                        href="{% url 'predict' %}"
+                        class="predict-link"
+                    >
+                        🔍 Make a Prediction
+                    </a>
+
+                </div>
+
+            </div>
+
+        {% endif %}
+
+
+    </div>
+
+</div>
+
+{% endblock %}
+
+
+{% block extra_js %}
+
+<script>
+
+    function confirmDelete() {
+        return confirm(
+            "Are you sure you want to delete this prediction history?"
+        );
+    }
+
+</script>
+
+{% endblock %}

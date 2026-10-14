@@ -1,0 +1,696 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}
+Home | KidneyAI
+{% endblock %}
+
+{% block extra_css %}
+<style>
+    * {
+        box-sizing: border-box;
+    }
+
+    .home {
+        width: 92%;
+        max-width: 1280px;
+        margin: 45px auto;
+    }
+
+    /* ============================================================
+       HERO SECTION — Water Blue Glass Card
+    ============================================================ */
+    .hero {
+        display: grid;
+        grid-template-columns: 1.1fr 0.9fr;
+        align-items: center;
+        gap: 40px;
+        padding: 60px 65px;
+        min-height: 440px;
+        background:
+            radial-gradient(circle at 85% 20%, rgba(33, 150, 211, 0.10) 0%, transparent 50%),
+            radial-gradient(circle at 10% 90%, rgba(0, 188, 212, 0.08) 0%, transparent 50%),
+            linear-gradient(135deg, #f5fbff 0%, #eaf4fb 100%);
+        border: 1px solid rgba(21, 101, 160, 0.10);
+        border-radius: 28px;
+        box-shadow: 0 20px 55px rgba(10, 61, 92, 0.10);
+        overflow: hidden;
+        position: relative;
+    }
+
+    /* Floating decorative blur circles */
+    .hero::before {
+        content: "";
+        position: absolute;
+        top: -80px;
+        right: -80px;
+        width: 320px;
+        height: 320px;
+        border-radius: 50%;
+        background: radial-gradient(circle, rgba(33, 150, 211, 0.18) 0%, transparent 70%);
+        filter: blur(20px);
+        pointer-events: none;
+    }
+
+    .hero-content {
+        min-width: 0;
+        position: relative;
+        z-index: 2;
+    }
+
+    /* Small badge above headline */
+    .hero-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 8px 16px;
+        background: linear-gradient(135deg, #eaf5fb, #d8ecf9);
+        border: 1px solid rgba(0, 188, 212, 0.25);
+        border-radius: 40px;
+        font-size: 12px;
+        font-weight: 700;
+        color: #1565a0;
+        letter-spacing: 0.05em;
+        text-transform: uppercase;
+        margin-bottom: 22px;
+    }
+
+    .hero-badge::before {
+        content: "";
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background: #00bcd4;
+        box-shadow: 0 0 10px #00bcd4;
+        animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+        0%, 100% { opacity: 1; }
+        50% { opacity: 0.4; }
+    }
+
+    .hero-content h1 {
+        font-family: 'Space Grotesk', sans-serif;
+        font-size: clamp(32px, 3.6vw, 50px);
+        line-height: 1.15;
+        color: #0a3d5c;
+        font-weight: 700;
+        margin: 0 0 22px;
+        letter-spacing: -0.02em;
+    }
+
+    .hero-content h1 span {
+        background: linear-gradient(120deg, #2196d3 0%, #00bcd4 100%);
+        -webkit-background-clip: text;
+        background-clip: text;
+        -webkit-text-fill-color: transparent;
+    }
+
+    .hero-content p {
+        max-width: 600px;
+        font-size: 16px;
+        line-height: 1.85;
+        color: #3d6987;
+        margin: 0 0 30px;
+    }
+
+    .hero-button {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 15px 30px;
+        background: linear-gradient(135deg, #2196d3, #00bcd4);
+        color: white;
+        text-decoration: none;
+        border-radius: 12px;
+        font-size: 15px;
+        font-weight: 700;
+        box-shadow: 0 12px 26px rgba(33, 150, 211, 0.35);
+        transition: all 0.28s ease;
+    }
+
+    .hero-button:hover {
+        background: linear-gradient(135deg, #1e88c7, #2196d3);
+        transform: translateY(-3px);
+        box-shadow: 0 18px 32px rgba(33, 150, 211, 0.45);
+    }
+
+    /* ============================================================
+       KIDNEY IMAGE
+    ============================================================ */
+    .hero-visual {
+        width: 100%;
+        min-width: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        position: relative;
+        z-index: 1;
+    }
+
+    .hero-image {
+        width: 100%;
+        max-width: 520px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        position: relative;
+    }
+
+    /* Glow ring behind kidney image */
+    .hero-image::before {
+        content: "";
+        position: absolute;
+        inset: -10%;
+        background: radial-gradient(circle, rgba(33, 150, 211, 0.18) 0%, transparent 65%);
+        filter: blur(30px);
+        z-index: -1;
+    }
+
+    .hero-image img {
+        display: block;
+        width: 100%;
+        height: 340px;
+        object-fit: contain;
+        border-radius: 20px;
+        filter: drop-shadow(0 20px 40px rgba(33, 150, 211, 0.30));
+        animation: float 5s ease-in-out infinite;
+    }
+
+    @keyframes float {
+        0%, 100% { transform: translateY(0); }
+        50% { transform: translateY(-14px); }
+    }
+
+    /* ============================================================
+       SECTION
+    ============================================================ */
+    .section {
+        margin-top: 70px;
+    }
+
+    .section-title {
+        text-align: center;
+        margin-bottom: 38px;
+    }
+
+    .section-title h2 {
+        font-family: 'Space Grotesk', sans-serif;
+        font-size: 30px;
+        color: #0a3d5c;
+        margin: 0 0 12px;
+        letter-spacing: -0.01em;
+    }
+
+    .section-title p {
+        color: #7a9db5;
+        font-size: 14px;
+        line-height: 1.7;
+        margin: 0;
+    }
+
+    /* ============================================================
+       FEATURE CARDS
+    ============================================================ */
+    .cards {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 22px;
+    }
+
+    .card {
+        background: #ffffff;
+        padding: 34px 26px;
+        border: 1px solid rgba(21, 101, 160, 0.10);
+        border-radius: 20px;
+        text-align: center;
+        box-shadow: 0 10px 35px rgba(10, 61, 92, 0.06);
+        transition: all 0.28s ease;
+        position: relative;
+        overflow: hidden;
+    }
+
+    /* Top gradient bar on hover */
+    .card::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 4px;
+        background: linear-gradient(90deg, #2196d3, #00bcd4);
+        transform: scaleX(0);
+        transform-origin: left;
+        transition: transform 0.35s ease;
+    }
+
+    .card:hover::before {
+        transform: scaleX(1);
+    }
+
+    .card:hover {
+        transform: translateY(-6px);
+        border-color: rgba(33, 150, 211, 0.30);
+        box-shadow: 0 20px 45px rgba(33, 150, 211, 0.15);
+    }
+
+    .card-icon {
+        width: 64px;
+        height: 64px;
+        margin: 0 auto 20px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #eaf5fb, #d8ecf9);
+        color: #2196d3;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-size: 28px;
+        box-shadow: 0 6px 18px rgba(33, 150, 211, 0.15);
+        transition: transform 0.3s ease;
+    }
+
+    .card:hover .card-icon {
+        transform: scale(1.08) rotate(-4deg);
+    }
+
+    .card h3 {
+        color: #0a3d5c;
+        font-size: 18px;
+        margin: 0 0 12px;
+        font-weight: 700;
+    }
+
+    .card p {
+        color: #3d6987;
+        font-size: 14px;
+        line-height: 1.8;
+        margin: 0;
+    }
+
+    /* ============================================================
+       HOW IT WORKS — STEPS
+    ============================================================ */
+    .steps {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 22px;
+        position: relative;
+    }
+
+    /* Dotted connector line between steps (desktop) */
+    .steps::before {
+        content: "";
+        position: absolute;
+        top: 60px;
+        left: 15%;
+        right: 15%;
+        height: 2px;
+        background: repeating-linear-gradient(
+            90deg,
+            rgba(33, 150, 211, 0.30) 0px,
+            rgba(33, 150, 211, 0.30) 8px,
+            transparent 8px,
+            transparent 16px
+        );
+        z-index: 0;
+    }
+
+    .step {
+        background: #ffffff;
+        border: 1px solid rgba(21, 101, 160, 0.10);
+        border-radius: 20px;
+        padding: 34px 24px;
+        text-align: center;
+        box-shadow: 0 10px 35px rgba(10, 61, 92, 0.05);
+        transition: all 0.28s ease;
+        position: relative;
+        z-index: 1;
+    }
+
+    .step:hover {
+        transform: translateY(-6px);
+        border-color: rgba(33, 150, 211, 0.30);
+        box-shadow: 0 20px 45px rgba(33, 150, 211, 0.15);
+    }
+
+    .step-number {
+        width: 54px;
+        height: 54px;
+        margin: 0 auto 18px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #2196d3, #00bcd4);
+        color: #ffffff;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 19px;
+        font-weight: 700;
+        box-shadow: 0 10px 22px rgba(33, 150, 211, 0.35);
+        transition: transform 0.3s ease;
+    }
+
+    .step:hover .step-number {
+        transform: scale(1.10);
+    }
+
+    .step h3 {
+        font-size: 17px;
+        margin: 0 0 10px;
+        color: #0a3d5c;
+        font-weight: 700;
+    }
+
+    .step p {
+        color: #3d6987;
+        font-size: 14px;
+        line-height: 1.8;
+        margin: 0;
+    }
+
+    /* ============================================================
+       CALL TO ACTION
+    ============================================================ */
+    .cta {
+        margin-top: 70px;
+        padding: 55px 30px;
+        background:
+            radial-gradient(circle at 20% 20%, rgba(0, 188, 212, 0.35) 0%, transparent 50%),
+            radial-gradient(circle at 80% 80%, rgba(33, 150, 211, 0.45) 0%, transparent 50%),
+            linear-gradient(135deg, #1565a0 0%, #0a3d5c 100%);
+        border-radius: 26px;
+        text-align: center;
+        color: #ffffff;
+        position: relative;
+        overflow: hidden;
+        box-shadow: 0 20px 50px rgba(10, 61, 92, 0.25);
+    }
+
+    /* Decorative aqua glow */
+    .cta::before {
+        content: "";
+        position: absolute;
+        top: -100px;
+        right: -100px;
+        width: 350px;
+        height: 350px;
+        border-radius: 50%;
+        background: radial-gradient(circle, rgba(0, 188, 212, 0.30) 0%, transparent 70%);
+        filter: blur(30px);
+        pointer-events: none;
+    }
+
+    .cta h2 {
+        font-family: 'Space Grotesk', sans-serif;
+        font-size: 30px;
+        line-height: 1.35;
+        margin: 0 0 14px;
+        position: relative;
+        z-index: 1;
+        letter-spacing: -0.01em;
+    }
+
+    .cta p {
+        font-size: 15px;
+        line-height: 1.75;
+        color: #c7e6f5;
+        margin: 0 0 30px;
+        position: relative;
+        z-index: 1;
+    }
+
+    .cta-button {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        background: #ffffff;
+        color: #1565a0;
+        text-decoration: none;
+        padding: 15px 32px;
+        border-radius: 12px;
+        font-weight: 700;
+        font-size: 15px;
+        transition: all 0.28s ease;
+        position: relative;
+        z-index: 1;
+        box-shadow: 0 12px 26px rgba(0, 0, 0, 0.15);
+    }
+
+    .cta-button:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 18px 34px rgba(0, 0, 0, 0.25);
+        color: #0a3d5c;
+    }
+
+    /* ============================================================
+       RESPONSIVE
+    ============================================================ */
+    @media (max-width: 1000px) {
+        .hero {
+            grid-template-columns: 1.1fr 0.85fr;
+            padding: 45px 40px;
+            gap: 24px;
+        }
+
+        .hero-image img {
+            height: 290px;
+        }
+
+        .steps::before {
+            display: none;
+        }
+    }
+
+    @media (max-width: 850px) {
+        .cards,
+        .steps {
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+    }
+
+    @media (max-width: 650px) {
+        .home {
+            width: 92%;
+            margin: 25px auto;
+        }
+
+        .hero {
+            grid-template-columns: 1fr;
+            text-align: center;
+            padding: 38px 22px;
+            gap: 28px;
+            border-radius: 22px;
+        }
+
+        .hero-badge {
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .hero-content h1 {
+            font-size: 32px;
+        }
+
+        .hero-content p {
+            font-size: 14px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .hero-button {
+            padding: 13px 24px;
+            font-size: 14px;
+        }
+
+        .hero-image img {
+            height: 250px;
+        }
+
+        .section {
+            margin-top: 48px;
+        }
+
+        .section-title {
+            margin-bottom: 28px;
+        }
+
+        .section-title h2 {
+            font-size: 24px;
+        }
+
+        .cards,
+        .steps {
+            grid-template-columns: 1fr;
+            gap: 16px;
+        }
+
+        .card,
+        .step {
+            padding: 28px 22px;
+        }
+
+        .cta {
+            margin-top: 48px;
+            padding: 40px 22px;
+            border-radius: 22px;
+        }
+
+        .cta h2 {
+            font-size: 23px;
+        }
+
+        .cta p {
+            font-size: 14px;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+
+<main class="home">
+
+    <!-- ============================================================
+         HERO
+    ============================================================ -->
+    <section class="hero">
+
+        <div class="hero-content">
+
+            <span class="hero-badge">AI-Powered Diagnosis</span>
+
+            <h1>
+                AI-Based <span>Kidney Disease</span> Prediction
+            </h1>
+
+            <p>
+                KidneyAI is a Machine Learning based prediction
+                system designed to analyze patient health information
+                and predict the possible kidney disease category
+                with clinical-grade accuracy.
+            </p>
+
+            <a href="{% url 'predict' %}" class="hero-button">
+                Start Prediction →
+            </a>
+
+        </div>
+
+        <div class="hero-visual">
+            <div class="hero-image">
+                <img
+                    src="{% static 'images/kidney.jpg' %}"
+                    alt="Kidney anatomy and AI medical analysis"
+                    loading="eager"
+                >
+            </div>
+        </div>
+
+    </section>
+
+    <!-- ============================================================
+         FEATURES
+    ============================================================ -->
+    <section class="section">
+
+        <div class="section-title">
+            <h2>Why KidneyAI?</h2>
+            <p>
+                Simple, fast and AI-powered kidney disease prediction
+            </p>
+        </div>
+
+        <div class="cards">
+
+            <div class="card">
+                <div class="card-icon">🤖</div>
+                <h3>Machine Learning</h3>
+                <p>
+                    Uses a trained Machine Learning model to analyze
+                    patient inputs and generate a reliable prediction.
+                </p>
+            </div>
+
+            <div class="card">
+                <div class="card-icon">⚡</div>
+                <h3>Fast Prediction</h3>
+                <p>
+                    Enter the required patient health information
+                    and receive the model's prediction instantly.
+                </p>
+            </div>
+
+            <div class="card">
+                <div class="card-icon">📊</div>
+                <h3>Prediction History</h3>
+                <p>
+                    View your saved predictions in the History
+                    section whenever you need them.
+                </p>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- ============================================================
+         HOW IT WORKS
+    ============================================================ -->
+    <section class="section">
+
+        <div class="section-title">
+            <h2>How It Works</h2>
+            <p>Three simple steps to get a prediction</p>
+        </div>
+
+        <div class="steps">
+
+            <div class="step">
+                <div class="step-number">1</div>
+                <h3>Enter Details</h3>
+                <p>
+                    Enter the required patient health information
+                    in the prediction form.
+                </p>
+            </div>
+
+            <div class="step">
+                <div class="step-number">2</div>
+                <h3>AI Analysis</h3>
+                <p>
+                    The trained Machine Learning model analyzes
+                    the information you provide.
+                </p>
+            </div>
+
+            <div class="step">
+                <div class="step-number">3</div>
+                <h3>Get Result</h3>
+                <p>
+                    View the predicted kidney disease category
+                    and model confidence.
+                </p>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- ============================================================
+         CALL TO ACTION
+    ============================================================ -->
+    <section class="cta">
+
+        <h2>Ready to Check Kidney Condition?</h2>
+
+        <p>
+            Enter patient details and start an AI-based prediction.
+        </p>
+
+        <a href="{% url 'predict' %}" class="cta-button">
+            Predict Now →
+        </a>
+
+    </section>
+
+</main>
+
+{% endblock %}

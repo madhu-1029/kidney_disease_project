@@ -1,0 +1,674 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}
+About | KidneyAI
+{% endblock %}
+
+
+{% block extra_css %}
+
+<style>
+
+    .about-page {
+        width: 92%;
+        max-width: 1180px;
+        margin: 50px auto;
+    }
+
+    /* ============================================================
+       HEADER
+    ============================================================ */
+    .about-header {
+        text-align: center;
+        margin-bottom: 50px;
+        position: relative;
+    }
+
+    .about-header .badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 8px 18px;
+        background: linear-gradient(135deg, #eaf5fb, #d8ecf9);
+        border: 1px solid rgba(0, 188, 212, 0.25);
+        border-radius: 40px;
+        font-size: 12px;
+        font-weight: 700;
+        color: #1565a0;
+        letter-spacing: 0.05em;
+        text-transform: uppercase;
+        margin-bottom: 20px;
+    }
+
+    .about-header .badge::before {
+        content: "";
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background: #00bcd4;
+        box-shadow: 0 0 10px #00bcd4;
+        animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+        0%, 100% { opacity: 1; }
+        50% { opacity: 0.4; }
+    }
+
+    .about-header h1 {
+        font-family: 'Space Grotesk', sans-serif;
+        font-size: 40px;
+        color: #0a3d5c;
+        margin-bottom: 12px;
+        letter-spacing: -0.02em;
+        font-weight: 700;
+    }
+
+    .about-header h1 span {
+        background: linear-gradient(120deg, #2196d3 0%, #00bcd4 100%);
+        -webkit-background-clip: text;
+        background-clip: text;
+        -webkit-text-fill-color: transparent;
+    }
+
+    .about-header p {
+        color: #7a9db5;
+        font-size: 15px;
+        max-width: 520px;
+        margin: 0 auto;
+        line-height: 1.7;
+    }
+
+    /* ============================================================
+       INTRO CARD
+    ============================================================ */
+    .intro-card {
+        background: #ffffff;
+        border: 1px solid rgba(21, 101, 160, 0.10);
+        border-radius: 24px;
+        padding: 44px 46px;
+        box-shadow: 0 15px 45px rgba(10, 61, 92, 0.08);
+        margin-bottom: 28px;
+        position: relative;
+        overflow: hidden;
+    }
+
+    /* Left accent bar */
+    .intro-card::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 5px;
+        height: 100%;
+        background: linear-gradient(180deg, #2196d3, #00bcd4);
+    }
+
+    .intro-card h2 {
+        font-family: 'Space Grotesk', sans-serif;
+        color: #0a3d5c;
+        font-size: 26px;
+        margin-bottom: 18px;
+        letter-spacing: -0.01em;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+    }
+
+    .intro-card h2::before {
+        content: "📘";
+        font-size: 24px;
+    }
+
+    .intro-card p {
+        color: #3d6987;
+        font-size: 15px;
+        line-height: 1.9;
+        margin-bottom: 14px;
+    }
+
+    .intro-card p:last-child {
+        margin-bottom: 0;
+    }
+
+    /* ============================================================
+       GRID — TWO CARDS
+    ============================================================ */
+    .about-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 24px;
+        margin-bottom: 28px;
+    }
+
+    .info-card {
+        background: #ffffff;
+        border: 1px solid rgba(21, 101, 160, 0.10);
+        border-radius: 22px;
+        padding: 34px;
+        box-shadow: 0 10px 35px rgba(10, 61, 92, 0.07);
+        transition: all 0.28s ease;
+        position: relative;
+        overflow: hidden;
+    }
+
+    /* Top gradient bar on hover */
+    .info-card::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 4px;
+        background: linear-gradient(90deg, #2196d3, #00bcd4);
+        transform: scaleX(0);
+        transform-origin: left;
+        transition: transform 0.35s ease;
+    }
+
+    .info-card:hover::before {
+        transform: scaleX(1);
+    }
+
+    .info-card:hover {
+        transform: translateY(-5px);
+        border-color: rgba(33, 150, 211, 0.30);
+        box-shadow: 0 20px 45px rgba(33, 150, 211, 0.15);
+    }
+
+    .info-icon {
+        width: 60px;
+        height: 60px;
+        border-radius: 16px;
+        background: linear-gradient(135deg, #eaf5fb, #d8ecf9);
+        color: #2196d3;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 28px;
+        margin-bottom: 20px;
+        box-shadow: 0 6px 18px rgba(33, 150, 211, 0.15);
+        transition: transform 0.3s ease;
+    }
+
+    .info-card:hover .info-icon {
+        transform: scale(1.08) rotate(-4deg);
+    }
+
+    .info-card h3 {
+        color: #0a3d5c;
+        font-size: 20px;
+        margin-bottom: 14px;
+        font-weight: 700;
+        font-family: 'Space Grotesk', sans-serif;
+        letter-spacing: -0.01em;
+    }
+
+    .info-card p {
+        color: #3d6987;
+        font-size: 14px;
+        line-height: 1.8;
+    }
+
+    /* ============================================================
+       FEATURES CARD
+    ============================================================ */
+    .features-card {
+        background: #ffffff;
+        border: 1px solid rgba(21, 101, 160, 0.10);
+        border-radius: 22px;
+        padding: 40px;
+        box-shadow: 0 10px 35px rgba(10, 61, 92, 0.07);
+        margin-bottom: 28px;
+        position: relative;
+        overflow: hidden;
+    }
+
+    /* Decorative glow */
+    .features-card::before {
+        content: "";
+        position: absolute;
+        top: -80px;
+        right: -80px;
+        width: 260px;
+        height: 260px;
+        border-radius: 50%;
+        background: radial-gradient(circle, rgba(0, 188, 212, 0.10) 0%, transparent 70%);
+        filter: blur(20px);
+        pointer-events: none;
+    }
+
+    .features-card h2 {
+        font-family: 'Space Grotesk', sans-serif;
+        color: #0a3d5c;
+        text-align: center;
+        font-size: 27px;
+        margin-bottom: 32px;
+        letter-spacing: -0.01em;
+        position: relative;
+        z-index: 1;
+    }
+
+    .features {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 14px;
+        position: relative;
+        z-index: 1;
+    }
+
+    .feature {
+        display: flex;
+        align-items: center;
+        padding: 16px 20px;
+        background: linear-gradient(135deg, #f5fbff 0%, #eaf5fb 100%);
+        border: 1px solid rgba(21, 101, 160, 0.08);
+        border-radius: 12px;
+        color: #3d6987;
+        font-size: 14px;
+        font-weight: 500;
+        transition: all 0.25s ease;
+    }
+
+    .feature:hover {
+        background: linear-gradient(135deg, #eaf5fb 0%, #d8ecf9 100%);
+        border-color: rgba(33, 150, 211, 0.30);
+        transform: translateX(4px);
+    }
+
+    .feature-icon {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 26px;
+        height: 26px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #2196d3, #00bcd4);
+        color: #ffffff;
+        font-weight: 700;
+        font-size: 13px;
+        margin-right: 14px;
+        flex-shrink: 0;
+        box-shadow: 0 4px 10px rgba(33, 150, 211, 0.30);
+    }
+
+    /* ============================================================
+       CLASSES CARD
+    ============================================================ */
+    .classes-card {
+        background: #ffffff;
+        border: 1px solid rgba(21, 101, 160, 0.10);
+        border-radius: 22px;
+        padding: 40px;
+        box-shadow: 0 10px 35px rgba(10, 61, 92, 0.07);
+        position: relative;
+        overflow: hidden;
+    }
+
+    .classes-card::before {
+        content: "";
+        position: absolute;
+        bottom: -80px;
+        left: -80px;
+        width: 260px;
+        height: 260px;
+        border-radius: 50%;
+        background: radial-gradient(circle, rgba(33, 150, 211, 0.10) 0%, transparent 70%);
+        filter: blur(20px);
+        pointer-events: none;
+    }
+
+    .classes-card h2 {
+        font-family: 'Space Grotesk', sans-serif;
+        text-align: center;
+        color: #0a3d5c;
+        font-size: 27px;
+        margin-bottom: 30px;
+        letter-spacing: -0.01em;
+        position: relative;
+        z-index: 1;
+    }
+
+    .classes {
+        display: grid;
+        grid-template-columns: repeat(5, 1fr);
+        gap: 12px;
+        position: relative;
+        z-index: 1;
+    }
+
+    .class-item {
+        padding: 22px 12px;
+        background: linear-gradient(135deg, #f5fbff 0%, #eaf5fb 100%);
+        border: 1px solid rgba(33, 150, 211, 0.18);
+        border-radius: 14px;
+        text-align: center;
+        color: #1565a0;
+        font-size: 13px;
+        font-weight: 700;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        line-height: 1.5;
+        transition: all 0.28s ease;
+        position: relative;
+        overflow: hidden;
+    }
+
+    /* Top gradient bar appears on hover */
+    .class-item::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 3px;
+        background: linear-gradient(90deg, #2196d3, #00bcd4);
+        transform: scaleX(0);
+        transform-origin: center;
+        transition: transform 0.35s ease;
+    }
+
+    .class-item:hover::before {
+        transform: scaleX(1);
+    }
+
+    .class-item:hover {
+        background: linear-gradient(135deg, #eaf5fb 0%, #d8ecf9 100%);
+        border-color: rgba(33, 150, 211, 0.40);
+        transform: translateY(-4px);
+        box-shadow: 0 12px 24px rgba(33, 150, 211, 0.18);
+    }
+
+    /* ============================================================
+       RESPONSIVE
+    ============================================================ */
+    @media (max-width: 1000px) {
+        .classes {
+            grid-template-columns: repeat(3, 1fr);
+        }
+    }
+
+    @media (max-width: 850px) {
+
+        .about-page {
+            width: 94%;
+            margin: 35px auto;
+        }
+
+        .about-header h1 {
+            font-size: 32px;
+        }
+
+        .about-header p {
+            font-size: 14px;
+        }
+
+        .intro-card,
+        .info-card,
+        .features-card,
+        .classes-card {
+            padding: 28px;
+            border-radius: 18px;
+        }
+
+        .intro-card h2,
+        .features-card h2,
+        .classes-card h2 {
+            font-size: 22px;
+        }
+
+        .about-grid {
+            grid-template-columns: 1fr;
+            gap: 18px;
+        }
+
+        .features {
+            grid-template-columns: 1fr;
+        }
+
+        .classes {
+            grid-template-columns: repeat(2, 1fr);
+        }
+
+    }
+
+    @media (max-width: 550px) {
+
+        .about-header h1 {
+            font-size: 26px;
+        }
+
+        .intro-card,
+        .info-card,
+        .features-card,
+        .classes-card {
+            padding: 22px;
+        }
+
+        .intro-card h2,
+        .features-card h2,
+        .classes-card h2 {
+            font-size: 20px;
+        }
+
+        .info-icon {
+            width: 54px;
+            height: 54px;
+            font-size: 24px;
+        }
+
+        .info-card h3 {
+            font-size: 18px;
+        }
+
+        .classes {
+            grid-template-columns: 1fr;
+        }
+
+        .class-item {
+            padding: 18px 12px;
+        }
+
+    }
+
+</style>
+
+{% endblock %}
+
+
+{% block content %}
+
+<main class="about-page">
+
+
+    <!-- ============================================================
+         HEADER
+    ============================================================ -->
+    <div class="about-header">
+
+        <span class="badge">About the Project</span>
+
+        <h1>
+            About <span>KidneyAI</span>
+        </h1>
+
+        <p>
+            AI-Based Kidney Disease Prediction System — powered by Machine Learning
+        </p>
+
+    </div>
+
+
+    <!-- ============================================================
+         INTRO
+    ============================================================ -->
+    <div class="intro-card">
+
+        <h2>
+            About the Project
+        </h2>
+
+        <p>
+            KidneyAI is a Machine Learning based
+            kidney disease prediction system developed
+            to analyze important patient health
+            information and predict the possible
+            kidney disease category.
+        </p>
+
+        <p>
+            The system accepts selected patient
+            parameters such as age, gender, BMI,
+            blood pressure, serum creatinine, eGFR,
+            urine albumin and other relevant
+            health information.
+        </p>
+
+        <p>
+            The entered information is processed by
+            a trained Machine Learning model, which
+            predicts one of the predefined kidney
+            condition categories.
+        </p>
+
+    </div>
+
+
+    <!-- ============================================================
+         TWO CARDS
+    ============================================================ -->
+    <div class="about-grid">
+
+
+        <!-- OBJECTIVE -->
+        <div class="info-card">
+
+            <div class="info-icon">
+                🎯
+            </div>
+
+            <h3>
+                Project Objective
+            </h3>
+
+            <p>
+                The main objective of KidneyAI is to
+                provide a simple interface where
+                patient information can be entered
+                and analyzed using a trained Machine
+                Learning model.
+            </p>
+
+        </div>
+
+
+        <!-- TECHNOLOGY -->
+        <div class="info-card">
+
+            <div class="info-icon">
+                🤖
+            </div>
+
+            <h3>
+                Machine Learning
+            </h3>
+
+            <p>
+                The system uses a trained Random Forest
+                Machine Learning model to classify
+                patient information into different
+                kidney disease categories.
+            </p>
+
+        </div>
+
+
+    </div>
+
+
+    <!-- ============================================================
+         FEATURES
+    ============================================================ -->
+    <div class="features-card">
+
+        <h2>
+            System Features
+        </h2>
+
+        <div class="features">
+
+            <div class="feature">
+                <span class="feature-icon">✓</span>
+                Patient Information Input
+            </div>
+
+            <div class="feature">
+                <span class="feature-icon">✓</span>
+                Machine Learning Prediction
+            </div>
+
+            <div class="feature">
+                <span class="feature-icon">✓</span>
+                Prediction Confidence
+            </div>
+
+            <div class="feature">
+                <span class="feature-icon">✓</span>
+                Prediction History
+            </div>
+
+            <div class="feature">
+                <span class="feature-icon">✓</span>
+                User-Friendly Interface
+            </div>
+
+            <div class="feature">
+                <span class="feature-icon">✓</span>
+                Django-Based Web Application
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- ============================================================
+         PREDICTION CLASSES
+    ============================================================ -->
+    <div class="classes-card">
+
+        <h2>
+            Prediction Categories
+        </h2>
+
+        <div class="classes">
+
+            <div class="class-item">
+                Healthy Kidney
+            </div>
+
+            <div class="class-item">
+                Mild CKD<br>(Stage 1–2)
+            </div>
+
+            <div class="class-item">
+                Moderate CKD<br>(Stage 3)
+            </div>
+
+            <div class="class-item">
+                Severe CKD<br>(Stage 4)
+            </div>
+
+            <div class="class-item">
+                Kidney Failure<br>(Stage 5)
+            </div>
+
+        </div>
+    </div>
+
+
+</main>
+
+{% endblock %}
